@@ -1,0 +1,256 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{0D73CD2D-5AC9-44B7-91C0-1125AA648D90}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>PNPController</RootNamespace>
+    <AssemblyName>PNPController</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>appicon.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Emgu.CV">
+      <HintPath>C:\Emgu\emgucv-windows-universal-cuda 2.9.0.1922\bin\Emgu.CV.dll</HintPath>
+    </Reference>
+    <Reference Include="Emgu.CV.UI">
+      <HintPath>C:\Emgu\emgucv-windows-universal-cuda 2.9.0.1922\bin\Emgu.CV.UI.dll</HintPath>
+    </Reference>
+    <Reference Include="Emgu.Util">
+      <HintPath>C:\Emgu\emgucv-windows-universal-cuda 2.9.0.1922\bin\Emgu.Util.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualBasic" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Design" />
+    <Reference Include="System.Windows.Forms.Ribbon35">
+      <HintPath>.\System.Windows.Forms.Ribbon35.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="CameraHead.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CameraHead.Designer.cs">
+      <DependentUpon>CameraHead.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CameraVision.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CameraVision.Designer.cs">
+      <DependentUpon>CameraVision.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ComponentEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ComponentEditor.Designer.cs">
+      <DependentUpon>ComponentEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ComponentFeeders.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Components.cs" />
+    <Compile Include="DataToMach3.cs" />
+    <Compile Include="Form1.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form1.Designer.cs">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PCBLoader.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="VideoProcessing.cs" />
+    <EmbeddedResource Include="CameraHead.resx">
+      <DependentUpon>CameraHead.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CameraVision.resx">
+      <DependentUpon>CameraVision.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ComponentEditor.resx">
+      <DependentUpon>ComponentEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form1.resx">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <None Include="board.xsd">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="components.xsd">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="Mach4">
+      <Guid>{316FD4DD-E21C-4672-A938-0B36276C54A0}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="appicon.ico" />
+    <Content Include="boards\rtcpi.xml" />
+    <Content Include="components.xml">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\addons32.png" />
+    <Content Include="Resources\bold16.png" />
+    <Content Include="Resources\borderbottom16.png" />
+    <Content Include="Resources\casing16.png" />
+    <Content Include="Resources\close32.png" />
+    <Content Include="Resources\copy16.png" />
+    <Content Include="Resources\copyformat16.png" />
+    <Content Include="Resources\cut16.png" />
+    <Content Include="Resources\eraseformat16.png" />
+    <Content Include="Resources\exit16.png" />
+    <Content Include="Resources\fill16.png" />
+    <Content Include="Resources\find32.png" />
+    <Content Include="Resources\fontcolor16.png" />
+    <Content Include="Resources\fontsizedecrease16.png" />
+    <Content Include="Resources\fontsizeincrease16.png" />
+    <Content Include="Resources\goto16.png" />
+    <Content Include="Resources\hilight16.png" />
+    <Content Include="Resources\indentdecrease16.png" />
+    <Content Include="Resources\indentdecrease161.png" />
+    <Content Include="Resources\indentincrease16.png" />
+    <Content Include="Resources\invisiblechars16.png" />
+    <Content Include="Resources\italic16.png" />
+    <Content Include="Resources\multilevellist16.png" />
+    <Content Include="Resources\newdocument32.png" />
+    <Content Include="Resources\open16.png" />
+    <Content Include="Resources\open32.png" />
+    <Content Include="Resources\options16.png" />
+    <Content Include="Resources\orderedlist16.png" />
+    <Content Include="Resources\pageblank16.png" />
+    <Content Include="Resources\paragraphspacing16.png" />
+    <Content Include="Resources\paste16.png" />
+    <Content Include="Resources\paste32.png" />
+    <Content Include="Resources\paste321.png" />
+    <Content Include="Resources\pastelink16.png" />
+    <Content Include="Resources\pastespecial16.png" />
+    <Content Include="Resources\prepare32.png" />
+    <Content Include="Resources\print32.png" />
+    <Content Include="Resources\print321.png" />
+    <Content Include="Resources\printpreview32.png" />
+    <Content Include="Resources\printquick16.png" />
+    <Content Include="Resources\printquick32.png" />
+    <Content Include="Resources\publish32.png" />
+    <Content Include="Resources\replace16.png" />
+    <Content Include="Resources\save16.png" />
+    <Content Include="Resources\save32.png" />
+    <Content Include="Resources\saveas32.png" />
+    <Content Include="Resources\saveas321.png" />
+    <Content Include="Resources\select16.png" />
+    <Content Include="Resources\send32.png" />
+    <Content Include="Resources\sort16.png" />
+    <Content Include="Resources\strikethru16.png" />
+    <Content Include="Resources\style16.png" />
+    <Content Include="Resources\stylechange32.png" />
+    <Content Include="Resources\styleset16.png" />
+    <Content Include="Resources\subindex16.png" />
+    <Content Include="Resources\superindex16.png" />
+    <Content Include="Resources\textaligncenter16.png" />
+    <Content Include="Resources\textalignjustify16.png" />
+    <Content Include="Resources\textalignleft16.png" />
+    <Content Include="Resources\textalignright16.png" />
+    <Content Include="Resources\themefont.png" />
+    <Content Include="Resources\underline16.png" />
+    <Content Include="Resources\undo16.png" />
+    <Content Include="Resources\unorderedlist16.png" />
+    <Content Include="Resources\word2003doc32.png" />
+    <Content Include="Resources\worddocument32.png" />
+    <Content Include="Resources\wordtemplate32.png" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

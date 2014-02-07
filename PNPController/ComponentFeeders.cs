@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -44,29 +44,29 @@ namespace PNPController
 
 
             // tape feeders
-            dtfeeder.Rows.Add(0, 30.6, 8.720, 3.5, "M90100", false); // empty
-            dtfeeder.Rows.Add(1, 50.53, 8.645, 3.5, "M90101", false); // dual mosfet
-            dtfeeder.Rows.Add(2, 70.6, 8.571, 3.5, "M90102", false); // 10uf
-            dtfeeder.Rows.Add(3, 90.33, 8.8, 3.5, "M90103", false); // 100nf
-            dtfeeder.Rows.Add(4, 110.35, 8.83, 3.4, "M90104", false); // 10K res
-            dtfeeder.Rows.Add(5, 130.059, 8.758, 3.4, "M90105", false); // 6K8 res
-            dtfeeder.Rows.Add(6, 150.33, 8.273, 3.5, "M90106", false); // 100R
-            dtfeeder.Rows.Add(7, 170.0, 8.667, 3.5, "M90107", false); // 10Kx4
-            dtfeeder.Rows.Add(8, 189.93, 8.124, 3.5, "M90108", false); // 2K2 x 4
-            dtfeeder.Rows.Add(9, 209.75, 8.049, 3.5, "M90109", false); // 1K
-            dtfeeder.Rows.Add(10, 229.63, 7.975, 3.5, "M90110", false); // signal diode
-            dtfeeder.Rows.Add(11, 249.65, 7.900, 3.5, "M90111", false);
-            dtfeeder.Rows.Add(12, 269.39, 7.826, 3.5, "M90112", false);
-            dtfeeder.Rows.Add(13, 289.17, 7.751, 3.5, "M90113", false);
-            dtfeeder.Rows.Add(14, 309.17, 7.677, 3.5, "M90114", false);
-            dtfeeder.Rows.Add(15, 328.77, 7.602, 3.5, "M90115", false);
-            // chip feeders
-            dtfeeder.Rows.Add(21, 16.2, 385.99, 8, "", true);
-            dtfeeder.Rows.Add(22, 44.2, 385.99, 8, "", true); // SOIC28
-            dtfeeder.Rows.Add(23, 72.2, 385.99, 8.4, "", true); // SOIC16
-            dtfeeder.Rows.Add(24, 100.2, 385.99, 8.4, "", true); // SOIC14
-            dtfeeder.Rows.Add(25, 128.035, 385.808, 8, "", true); // SOIC8
-            dtfeeder.Rows.Add(26, 156.2, 385.99, 8, "", true);
+	               dtfeeder.Rows.Add(0, 30.6, 8.720, 3.5, "M90100", false); // empty
+	               dtfeeder.Rows.Add(1, 50.53, 8.745, 3.5, "M90101", false); // dual mosfet
+	               dtfeeder.Rows.Add(2, 70.6, 8.571, 3.5, "M90102", false); // 10uf
+	               dtfeeder.Rows.Add(3, 90.33, 8.9, 3.3, "M90103", false); // 100nf
+	               dtfeeder.Rows.Add(4, 110.35, 8.83, 3.4, "M90104", false); // 10K res
+	               dtfeeder.Rows.Add(5, 130.059, 8.758, 3.4, "M90105", false); // 6K8 res
+	               dtfeeder.Rows.Add(6, 150.33, 8.53, 3.5, "M90106", false); // 100R
+	               dtfeeder.Rows.Add(7, 170.0, 8.667, 3.5, "M90107", false); // 10Kx4
+	               dtfeeder.Rows.Add(8, 189.76, 8.47, 3.5, "M90108", false); // 2K2 x 4
+	               dtfeeder.Rows.Add(9, 209.75, 8.049, 3.5, "M90109", false); // 1K
+	               dtfeeder.Rows.Add(10, 229.63, 7.975, 3.5, "M90110", false); // signal diode
+	               dtfeeder.Rows.Add(11, 249.65, 7.900, 3.5, "M90111", false);
+	               dtfeeder.Rows.Add(12, 269.39, 7.826, 3.5, "M90112", false);
+	               dtfeeder.Rows.Add(13, 289.17, 7.751, 3.5, "M90113", false);
+	               dtfeeder.Rows.Add(14, 309.17, 7.677, 3.5, "M90114", false);
+	               dtfeeder.Rows.Add(15, 328.77, 7.602, 3.5, "M90115", false);
+	               // chip feeders
+	               dtfeeder.Rows.Add(21, 16.2, 385.99, 8, "", true); // 
+	               dtfeeder.Rows.Add(22, 44.2, 385.99, 8, "", true); // SOIC28
+	               dtfeeder.Rows.Add(23, 72.2, 385.99, 8.4, "", true); // SOIC16
+	               dtfeeder.Rows.Add(24, 100.2, 385.99, 8.4, "", true); // SOIC14
+	               dtfeeder.Rows.Add(25, 128.035, 385.808, 8, "", true); // SOIC8
+            dtfeeder.Rows.Add(26, 155.397, 385.99, 8, "", true); // SOIC8
 
             return dtfeeder;
         }

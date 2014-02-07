@@ -85,7 +85,7 @@ namespace PNPController.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("12000")]
+        [global::System.Configuration.DefaultSettingValueAttribute("17000")]
         public int SettingFeedRate {
             get {
                 return ((int)(this["SettingFeedRate"]));
@@ -97,7 +97,7 @@ namespace PNPController.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("750")]
+        [global::System.Configuration.DefaultSettingValueAttribute("1000")]
         public int SettingTimeMS {
             get {
                 return ((int)(this["SettingTimeMS"]));

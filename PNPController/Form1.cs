@@ -9,9 +9,10 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using System.Threading;     // DLL support
-using System.IO;
+using System.IO; 
 using System.Text.RegularExpressions;
 using System.Windows.Forms.RibbonHelpers;
+using System.Net;
 
 
 namespace PNPController
@@ -24,6 +25,8 @@ namespace PNPController
         public double dblPCBThickness = 1.6;
         public int FeedRate = 20000;
         public int chipfeederms = 250;
+        public double ClearHeight = 15;
+        public double LowClearHeight = 15;
 
         public DataSet dsMain;
         public DataTable dtFeeders;
@@ -31,7 +34,10 @@ namespace PNPController
         private Mach4.IMach4 Mach = null;
         private Mach4.IMyScriptObject Script = null;
 
-       
+       // remote control 
+        HttpListener listener = new HttpListener();
+        string listeningURL = "http://10.0.0.8:8080/";
+
 
 
         // manual picker selector
@@ -46,6 +52,8 @@ namespace PNPController
         private Components comp = new Components();
         private PCBLoader csvload = new PCBLoader();
         private DataToMach3 dtom3 = new DataToMach3();
+
+        private JogControls jog = new JogControls();
 
         // define mach3 output short mapping
         short OUTPUT1 = 7;      //  arduino 1
@@ -84,6 +92,10 @@ namespace PNPController
             dtFeeders = cf.POPFeedersTable();
 
             LoadSettings();
+            Thread thrdRemote = new Thread(new ThreadStart(initRemote));
+            thrdRemote.Start();
+            thrdRemote.IsBackground = true;
+         
             /*
             comboBoxManualReelFeeder.DisplayMember = "feederNumber";
             comboBoxManualReelFeeder.ValueMember = "feederNumber";
@@ -178,6 +190,15 @@ namespace PNPController
                                        new MethodInvoker(() => this.toolStripStatusLabelActiveComponent.Text = text));
             else this.toolStripStatusLabelActiveComponent.Text = text;
         }
+        private void SetRemoteIPText(string text)
+        {
+            text = "Remote IP: " + text;
+            if (this.statusStrip1.InvokeRequired)
+                this.statusStrip1.Invoke(
+                                       new MethodInvoker(() => this.toolStripStatusLabelIP.Text = text));
+            else this.toolStripStatusLabelIP.Text = text;
+        }
+
 
         private void SetResultsLabelText(string text)
         {
@@ -327,12 +348,12 @@ namespace PNPController
 
             RunMach3Command(Script, "F" + ribbonTextBoxFeedRate.TextBoxText);
             ChangeVacOutput(1, false);
-            RunMach3Command(Script, "G01 A" + CalcAZHeight(20));
+            RunMach3Command(Script, "G01 A" + CalcAZHeight(ClearHeight));
             RunMach3Command(Script, "G01 X" + feederPosX.ToString() + "  Y" + feederPosY);
             CheckFeederReady(Script);
             RunMach3Command(Script, "G01 A" + CalcAZHeight(feederPosZ)); // go down and turn on suction
             ChangeVacOutput(1, true);
-            RunMach3Command(Script, "G01 A" + CalcAZHeight(20));
+            RunMach3Command(Script, "G01 A" + CalcAZHeight(ClearHeight));
             RunMach3Command(Script, "G01 X" + currentx.ToString() + "  Y" + currenty.ToString());
 
             //worker.ReportProgress(1);
@@ -364,137 +385,157 @@ namespace PNPController
             RunMach3Command(Script, "F" + FeedRate.ToString());
             int currentrow = 0;
             int totalrows = rundata.Count;
-           // MessageBox.Show(totalrows.ToString());
-            RunMach3Command(Script, "G01 B0 C0");
-
-            /* table columns
-             RefDes
-                Type
-                PosX
-                PosY
-                ComponentRotation
-                ComponentValue
-                feederNumber
-                Code
-
-
-                ComponentHeight
-                DefaultRotation
-                VerifywithCamera
-                TapeFeeder
-
-
-                feederPosX
-                feederPosY
-                feederPosZ
-                PickPlusChipHeight
-             * */
-            
-            double progresspert = 0;
-            double progresspertcalc = 100/ totalrows;
-            while (currentrow < totalrows)
+            if (totalrows > 0)
             {
+                // MessageBox.Show(totalrows.ToString());
+                RunMach3Command(Script, "G01 B0 C0");
 
-                if (backgroundWorkerDoCommand.CancellationPending)
+                /* table columns
+                 RefDes
+                    Type
+                    PosX
+                    PosY
+                    ComponentRotation
+                    ComponentValue
+                    feederNumber
+                    Code
+
+
+                    ComponentHeight
+                    DefaultRotation
+                    VerifywithCamera
+                    TapeFeeder
+
+
+                    feederPosX
+                    feederPosY
+                    feederPosZ
+                    PickPlusChipHeight
+                 * */
+
+                double progresspert = 0;
+                double progresspertcalc = 100 / totalrows;
+                while (currentrow < totalrows)
                 {
-                    e.Cancel = true;
-                    SetCurrentCommandText("Stopped");
 
-                   
-                    rundata.Dispose();
-                    break;
+                    if (backgroundWorkerDoCommand.CancellationPending)
+                    {
+                        e.Cancel = true;
+                        SetCurrentCommandText("Stopped");
+
+
+                        rundata.Dispose();
+                        break;
+                    }
+
+                    if (currentrow == 0)
+                    {
+                        SetFeederOutputs(Int32.Parse(rundata[currentrow]["FeederNumber"].ToString())); // send feeder to position
+                    }
+                    SetCurrentCommandText("Feeder Activate");
+                    SetCurrentCommandText(rundata[currentrow]["RefDes"].ToString());
+                    StetActiveComponentText(rundata[currentrow]["RefDes"].ToString());
+
+
+                    
+
+                    if (!rundata[currentrow]["TapeFeeder"].ToString().Equals("True"))
+                    {
+                        RunMach3Command(Script, "G01 A" + CalcAZHeight(ClearHeight));
+                    }
+                    RunMach3Command(Script, "G01 X" + rundata[currentrow]["feederPosX"].ToString() + "  Y" + rundata[currentrow]["feederPosY"].ToString());
+
+                    SetCurrentCommandText("Picking Component");
+                    if (rundata[currentrow]["TapeFeeder"].ToString().Equals("True"))
+                    {
+                        // use picker 1
+                        RunMach3Command(Script, "G01 A" + CalcAZHeight(Double.Parse(rundata[currentrow]["feederPosZ"].ToString()))); // go down and turn on suction
+                        ChangeVacOutput(1, true);
+                        RunMach3Command(Script, "G01 A" + CalcAZHeight(LowClearHeight));
+
+
+                    }
+                    else
+                    {
+                        // use picker 2
+
+
+                        RunMach3Command(Script, "G01 Z" + CalcAZHeight(Double.Parse(rundata[currentrow]["feederPosZ"].ToString()))); // go down and turn on suction
+                        ChangeVacOutput(2, true);
+                        //Thread.Sleep(500);
+                        RunMach3Command(Script, "G01 Z" + CalcAZHeight(ClearHeight));
+                    }
+                    // send picker to pick next item
+                    if (currentrow >= 0 && (currentrow + 1) < totalrows)
+                    {
+                        SetFeederOutputs(Int32.Parse(rundata[currentrow + 1]["FeederNumber"].ToString())); // send feeder to position
+                    }
+
+                    // rotate head
+                    double ComponentRotation = Double.Parse(rundata[currentrow]["ComponentRotation"].ToString());
+                    double DefaultRotation = Double.Parse(rundata[currentrow]["DefaultRotation"].ToString());
+
+
+
+                    RunMach3Command(Script, "G92 B0 C0 ");
+                    SetResultsLabelText("Placing Component");
+                    if (rundata[currentrow]["TapeFeeder"].ToString().Equals("True"))
+                    {
+                        // use picker 1
+                        if (DefaultRotation != ComponentRotation)
+                        {
+                            double newrotation = DefaultRotation + ComponentRotation;
+                            RunMach3Command(Script, "G01 B" + newrotation.ToString() + " X" + rundata[currentrow]["PosX"].ToString() + "  Y" + rundata[currentrow]["PosY"].ToString());
+                        }
+                        else
+                        {
+                            RunMach3Command(Script, "G01 X" + rundata[currentrow]["PosX"].ToString() + "  Y" + rundata[currentrow]["PosY"].ToString());
+                        }
+                        RunMach3Command(Script, "G01 A" + CalcAZPlaceHeight(Double.Parse(rundata[currentrow]["ComponentHeight"].ToString()))); // go down and turn off suction
+                        ChangeVacOutput(1, false);
+                        RunMach3Command(Script, "G01 A" + CalcAZHeight(LowClearHeight));
+                    }
+                    else
+                    {
+                        // use picker 2  CalcXwithNeedleSpacing
+                        if (DefaultRotation != ComponentRotation)
+                        {
+                            double newrotation = DefaultRotation + ComponentRotation;
+                            RunMach3Command(Script, "G01 C" + newrotation.ToString() + " X" + CalcXwithNeedleSpacing(Double.Parse(rundata[currentrow]["PosX"].ToString())).ToString() + "  Y" + rundata[currentrow]["PosY"].ToString());
+                        }
+                        else
+                        {
+                            RunMach3Command(Script, "G01 X" + CalcXwithNeedleSpacing(Double.Parse(rundata[currentrow]["PosX"].ToString())).ToString() + "  Y" + rundata[currentrow]["PosY"].ToString());
+                        }
+                        RunMach3Command(Script, "G01 Z" + CalcAZPlaceHeight(Double.Parse(rundata[currentrow]["ComponentHeight"].ToString()))); // go down and turn off suction
+                        ChangeVacOutput(2, false);
+                        RunMach3Command(Script, "G01 Z" + CalcAZHeight(ClearHeight));
+                    }
+
+
+
+
+
+
+
+                    currentrow++;
+                    progresspert = currentrow * progresspertcalc;
+                    worker.ReportProgress(Int32.Parse(progresspert.ToString()));
                 }
-
-                if (currentrow == 0)
-                {
-                    SetFeederOutputs(Int32.Parse(rundata[currentrow]["FeederNumber"].ToString())); // send feeder to position
-                }
-                SetCurrentCommandText("Feeder Activate");
-                SetCurrentCommandText(rundata[currentrow]["RefDes"].ToString());
-                StetActiveComponentText(rundata[currentrow]["RefDes"].ToString());
-                RunMach3Command(Script, "G01 X" + rundata[currentrow]["feederPosX"].ToString() + "  Y" + rundata[currentrow]["feederPosY"].ToString());
-
-                SetCurrentCommandText("Picking Component");
-                if (rundata[currentrow]["TapeFeeder"].ToString().Equals("True"))
-                {
-                    // use picker 1
-                    RunMach3Command(Script, "G01 A" + CalcAZHeight(Double.Parse(rundata[currentrow]["feederPosZ"].ToString()))); // go down and turn on suction
-                    ChangeVacOutput(1, true);
-                    RunMach3Command(Script, "G01 A" + CalcAZHeight(20));
-
-
-                }
-                else
-                {
-                    // use picker 2
-
-
-                    RunMach3Command(Script, "G01 Z" + CalcAZHeight(Double.Parse(rundata[currentrow]["feederPosZ"].ToString()))); // go down and turn on suction
-                    ChangeVacOutput(2, true);
-                    //Thread.Sleep(500);
-                    RunMach3Command(Script, "G01 Z" + CalcAZHeight(20));
-                }
-                // send picker to pick next item
-                if (currentrow >= 0 && (currentrow + 1) < totalrows)
-                {
-                    SetFeederOutputs(Int32.Parse(rundata[currentrow + 1]["FeederNumber"].ToString())); // send feeder to position
-                }
-
-                // rotate head
-                double ComponentRotation = Double.Parse(rundata[currentrow]["ComponentRotation"].ToString());
-                double DefaultRotation = Double.Parse(rundata[currentrow]["DefaultRotation"].ToString());
-
-                
-                
+                rundata.Dispose();
+                // home all axis and zero
+                SetResultsLabelText("Home and Reset");
                 RunMach3Command(Script, "G92 B0 C0 ");
-                SetResultsLabelText("Placing Component");
-                if (rundata[currentrow]["TapeFeeder"].ToString().Equals("True"))
-                {
-                    // use picker 1
-                    if (DefaultRotation != ComponentRotation)
-                    {
-                        double newrotation = DefaultRotation + ComponentRotation;
-                        RunMach3Command(Script, "G01 B" + newrotation.ToString() + " X" + rundata[currentrow]["PosX"].ToString() + "  Y" + rundata[currentrow]["PosY"].ToString());
-                    }
-                    else
-                    {
-                        RunMach3Command(Script, "G01 X" + rundata[currentrow]["PosX"].ToString() + "  Y" + rundata[currentrow]["PosY"].ToString());
-                    }
-                    RunMach3Command(Script, "G01 A" + CalcAZPlaceHeight(Double.Parse(rundata[currentrow]["ComponentHeight"].ToString()))); // go down and turn off suction
-                    ChangeVacOutput(1, false);
-                    RunMach3Command(Script, "G01 A" + CalcAZHeight(20));
-                }
-                else
-                {
-                    // use picker 2  CalcXwithNeedleSpacing
-                    if (DefaultRotation != ComponentRotation)
-                    {
-                        double newrotation = DefaultRotation + ComponentRotation;
-                        RunMach3Command(Script, "G01 C" + newrotation.ToString() + " X" + CalcXwithNeedleSpacing(Double.Parse(rundata[currentrow]["PosX"].ToString())).ToString() + "  Y" + rundata[currentrow]["PosY"].ToString());
-                    }
-                    else
-                    {
-                        RunMach3Command(Script, "G01 X" + CalcXwithNeedleSpacing(Double.Parse(rundata[currentrow]["PosX"].ToString())).ToString() + "  Y" + rundata[currentrow]["PosY"].ToString());
-                    }
-                    RunMach3Command(Script, "G01 Z" + CalcAZPlaceHeight(Double.Parse(rundata[currentrow]["ComponentHeight"].ToString()))); // go down and turn off suction
-                    ChangeVacOutput(2, false);
-                    RunMach3Command(Script, "G01 Z" + CalcAZHeight(20));
-                }
 
+                Thread thrd = new Thread(new ThreadStart(DoHomeAll));
+                thrd.Start();
+                thrd.IsBackground = true;
 
-
-
-
-
-
-                currentrow++;
-                progresspert = currentrow * progresspertcalc;
-                worker.ReportProgress(Int32.Parse(progresspert.ToString()));
             }
-            rundata.Dispose();
-            // home all axis and zero
-            SetResultsLabelText("Home and Reset");
-            RunMach3Command(Script, "G92 B0 C0 ");
+            else
+            {
+                MessageBox.Show("Board file not loaded");
+            }
             backgroundWorkerDoCommand.CancelAsync();
           
             worker.ReportProgress(100);
@@ -503,7 +544,11 @@ namespace PNPController
         public bool RunMach3Command(Mach4.IMyScriptObject script, string command)
         {
             SetCurrentCommandText(command);
+            try
+            {
             script.Code(command);
+            }
+            catch { }
             try
             {
                 while (script.IsMoving() != 0)
@@ -577,12 +622,12 @@ namespace PNPController
                 if (turnon)
                 {
                     Script.ActivateSignal(OUTPUT9);
-                    Thread.Sleep(500);
+                    Thread.Sleep(200);
                 }
                 else
                 {
                     Script.DeActivateSignal(OUTPUT9);
-                    Thread.Sleep(1000);
+                    Thread.Sleep(100);
                 }
             }
             // Thread.Sleep(50);
@@ -765,7 +810,7 @@ namespace PNPController
 
         private void Form1_Load(object sender, EventArgs e)
         {
-
+            
 
 
             // LoadCamera(pictureBox1, "Video Camera", 4, cam, true);
@@ -824,12 +869,20 @@ namespace PNPController
                 string file = openFileDialog1.FileName;
                 try
                 {
-                    string imagefile = file.Replace(".xml", ".jpg");
-                    if (System.IO.File.Exists(imagefile))
-                    {
-                        pictureBoxPCB.Image = new Bitmap(imagefile);
+                   // string imagefile = file.Replace(".xml", ".jpg");
+                  //  if (System.IO.File.Exists(imagefile))
+                  //  {
+                  //      pictureBoxPCB.Image = new Bitmap(imagefile);
                         
+                  //  }
+                    try
+                    {
+                        dsMain.Clear();
                     }
+                    catch { }
+                    
+
+
                     dsMain = csvload.LoadPCB(file, dataGridView1);
 
                     // data loaded, now set board defaults
@@ -846,6 +899,9 @@ namespace PNPController
                     dblPCBThickness = Double.Parse(dsMain.Tables["Settings"].Rows[0]["PCBThickness"].ToString());
                     FeedRate = Int32.Parse(dsMain.Tables["Settings"].Rows[0]["FeedRate"].ToString());
                     chipfeederms = Int32.Parse(dsMain.Tables["Settings"].Rows[0]["chipfeederms"].ToString());
+
+                    DrawComponents();
+
                  }
                 catch (Exception exc)
                 {
@@ -854,6 +910,71 @@ namespace PNPController
             }
         }
 
+        private void DrawComponents()
+        {
+            if (pictureBoxPCB.Image == null)
+            {
+                    pictureBoxPCB.Image = new Bitmap(pictureBoxPCB.Width, 
+                            pictureBoxPCB.Height);
+            }
+            else
+            {
+
+                pictureBoxPCB.InitialImage = null;
+                pictureBoxPCB.Image = new Bitmap(pictureBoxPCB.Width,
+                            pictureBoxPCB.Height);
+            }
+            using (Graphics g = Graphics.FromImage(pictureBoxPCB.Image))
+            {
+                // draw black background
+                g.Clear(Color.White);
+
+                DataTable dt = dsMain.Tables["Component"];
+
+                foreach (DataRow row in dt.Rows)
+                {
+                    try
+                    {
+                        int newx = Convert.ToInt32(Double.Parse(row["PosX"].ToString()) * 2.5);
+                        int newy = Convert.ToInt32(Double.Parse(row["PosY"].ToString()) * 2.5);
+                        //MessageBox.Show(newx.ToString() + " - " + newy.ToString());
+
+                        switch (row["RefDes"].ToString().Substring(0, 1).ToLower())
+                        {
+                            case "r":
+                                Rectangle rectres = new Rectangle(newx, newy, 2, 2);
+                                g.DrawRectangle(Pens.Black, rectres);
+                                break;
+                            case "c":
+                                Rectangle rectcap = new Rectangle(newx, newy, 2, 2);
+                                g.DrawRectangle(Pens.Orange, rectcap);
+                                break;
+                            case "U":
+                                Rectangle rectic = new Rectangle(newx, newy, 2, 2);
+                                g.DrawRectangle(Pens.Gray, rectic);
+                                break;
+                            default:
+                                Rectangle rect = new Rectangle(newx, newy, 2, 2);
+                                g.DrawRectangle(Pens.Red, rect);
+                                break;
+                        }
+                        
+                    }
+                    catch (Exception ex) {
+                        MessageBox.Show(ex.ToString());
+                    }
+                    
+                }
+
+
+
+                
+                
+            }
+            pictureBoxPCB.Image.RotateFlip(RotateFlipType.Rotate180FlipX);
+            pictureBoxPCB.Invalidate();
+
+        }
      
         private void ribbonButtonStart_Click(object sender, EventArgs e)
         {
@@ -896,12 +1017,24 @@ namespace PNPController
 
         private void DoHomeAll()
         {
+            SetFeederOutputs(98);
             Script.DoButton(24);
             Script.DoButton(25);
             Script.DoButton(22);
             Script.DoButton(23);
-            Script.Code("M90198");
             
+            
+        }
+
+        private void DoHome()
+        {
+            Script.Code("M90198");
+            Script.DoButton(24);
+            Script.DoButton(25);
+            Script.DoButton(22);
+            Script.DoButton(23);
+
+
         }
         private void ribbonButtonCheckAll_Click(object sender, EventArgs e)
         {
@@ -981,82 +1114,39 @@ namespace PNPController
 
         private void ribbonButtonManualJOGLeft_Click(object sender, EventArgs e)
         {
-            Thread thrd = new Thread(new ThreadStart(RunJOGLeft));
-            thrd.Start();
-            thrd.IsBackground = true;
-           }
-
-        private void RunJOGLeft()
-        {
-            double currentpos = Double.Parse(Script.GetParam("YDRO").ToString());
-            if (currentpos >= 5)
-            {
-                RunMach3Command(Script, "F3000");
-                RunMach3Command(Script, "G01 Y" + (currentpos - 5));
-            }
+           jog.RunJogCommand("Y", false, Script);
         }
-
         private void ribbonButtonManualJOGRight_Click(object sender, EventArgs e)
         {
-            Thread thrd = new Thread(new ThreadStart(RunJOGRight));
-            thrd.Start();
-            thrd.IsBackground = true;          
+            jog.RunJogCommand("Y", true, Script);
         }
-        private void RunJOGRight()
-        {
-            double currentpos = Double.Parse(Script.GetParam("YDRO").ToString());
-            if (currentpos >= 0)
-            {
-                RunMach3Command(Script, "F3000");
-                RunMach3Command(Script, "G01 Y" + (currentpos + 5));
-            }
-        }
+        
         private void ribbonButtonManualJOGUp_Click(object sender, EventArgs e)
         {
-            Thread thrd = new Thread(new ThreadStart(RunJOGUp));
-            thrd.Start();
-            thrd.IsBackground = true;   
-        }
-        private void RunJOGUp()
-        {
-            double currenty = Double.Parse(Script.GetParam("XDRO").ToString());
-            if (currenty >= 0)
-            {
-                RunMach3Command(Script, "F3000");
-                RunMach3Command(Script, "G01 X" + (currenty + 5));
-            }
+            jog.RunJogCommand("X", true, Script);
+           
         }
         private void ribbonButtonManualJOGDown_Click(object sender, EventArgs e)
         {
-            Thread thrd = new Thread(new ThreadStart(RunJOGDown));
-            thrd.Start();
-            thrd.IsBackground = true;   
+            jog.RunJogCommand("X", false, Script);
         }
-        private void RunJOGDown()
-        {
-            double currentpos = Double.Parse(Script.GetParam("XDRO").ToString());
-            if (currentpos >= 5)
-            {
-                RunMach3Command(Script, "F3000");
-                RunMach3Command(Script, "G01 X" + (currentpos - 5));
-            }
-        }
+        
         private void LoadSettings() {
 
-         ribbonTextBoxBoardOffsetX.TextBoxText  = Properties.Settings.Default.SettingBoardOffsetX.ToString(); //double
+         ribbonTextBoxBoardOffsetX.TextBoxText = Properties.Settings.Default.Properties["SettingBoardOffsetX"].DefaultValue.ToString(); // double
 
-         ribbonTextBoxBoardOffsetY.TextBoxText  = Properties.Settings.Default.SettingBoardOffsetY.ToString(); //double
+         ribbonTextBoxBoardOffsetY.TextBoxText  = Properties.Settings.Default.Properties["SettingBoardOffsetY"].DefaultValue.ToString(); //double
 
-         ribbonTextBoxPCBThickness.TextBoxText  = Properties.Settings.Default.SettingPCBThickness.ToString(); //double //double dblPCBThickness
+         ribbonTextBoxPCBThickness.TextBoxText  = Properties.Settings.Default.Properties["SettingPCBThickness"].DefaultValue.ToString(); //double //double dblPCBThickness
 
-         ribbonTextBoxFeedRate.TextBoxText = Properties.Settings.Default.SettingFeedRate.ToString();  //int FeedRate
+         ribbonTextBoxFeedRate.TextBoxText = Properties.Settings.Default.Properties["SettingFeedRate"].DefaultValue.ToString();  //int FeedRate
 
-         ribbonTextBoxChipMS.TextBoxText = Properties.Settings.Default.SettingTimeMS.ToString();  //int chipfeederms
+         ribbonTextBoxChipMS.TextBoxText = Properties.Settings.Default.Properties["SettingTimeMS"].DefaultValue.ToString();  //int chipfeederms
 
-         dblPCBThickness = Properties.Settings.Default.SettingPCBThickness;
-         FeedRate = Properties.Settings.Default.SettingFeedRate;
-         chipfeederms = Properties.Settings.Default.SettingTimeMS;
-
+         dblPCBThickness = Double.Parse(Properties.Settings.Default.Properties["SettingPCBThickness"].DefaultValue.ToString());
+         FeedRate = Int32.Parse(Properties.Settings.Default.Properties["SettingFeedRate"].DefaultValue.ToString());
+         chipfeederms = Int32.Parse(Properties.Settings.Default.Properties["SettingTimeMS"].DefaultValue.ToString());
+        
      }
      private void SaveSettings()
      {
@@ -1069,6 +1159,168 @@ namespace PNPController
 
          // Save settings
          Properties.Settings.Default.Save();
+     }
+
+     private void ribbonButtonCSVtoXML_Click(object sender, EventArgs e)
+     {
+         FormCSVtoXML csvcml = new FormCSVtoXML();
+         csvcml.Show(this);
+
+        
+     }
+
+     private void ribbonButtonBoardMultiplier_Click(object sender, EventArgs e)
+     {
+         FormBoardMultiplier boardmult = new FormBoardMultiplier();
+         boardmult.Show(this);
+     }
+
+     private void ribbonButtonManualControlPicker1Left_Click(object sender, EventArgs e)
+     {
+         jog.RunJogCommand("B", false, Script);
+     }
+
+     private void ribbonButtonManualControlPicker1Right_Click(object sender, EventArgs e)
+     {
+         jog.RunJogCommand("B", true, Script);
+     }
+
+     private void ribbonButtonManualControlPicker1Up_Click(object sender, EventArgs e)
+     {
+         jog.RunJogCommand("A", false, Script);
+     }
+
+     private void ribbonButtonManualControlPicker1Down_Click(object sender, EventArgs e)
+     {
+         jog.RunJogCommand("A", true, Script);
+     }
+
+     private void ribbonButtonManualControlPicker2Left_Click(object sender, EventArgs e)
+     {
+         jog.RunJogCommand("C", false, Script);
+     }
+
+     private void ribbonButtonManualControlPicker2Right_Click(object sender, EventArgs e)
+     {
+         jog.RunJogCommand("C", true, Script);
+     }
+
+     private void ribbonButtonManualControlPicker2Up_Click(object sender, EventArgs e)
+     {
+         jog.RunJogCommand("Z", false, Script);
+     }
+
+     private void ribbonButtonManualControlPicker2Down_Click(object sender, EventArgs e)
+     {
+         jog.RunJogCommand("Z", true, Script);
+     }
+
+     private void ribbonButton7_Click(object sender, EventArgs e)
+     {
+
+     }
+
+
+        // remote control for http remote access
+
+     public void stopRemote()
+     {
+         if (listener.IsListening)
+         {
+             listener.Stop();
+         }
+     }
+
+     protected string GetIP()   //get IP address
+     {
+        // IPHostEntry ipHost = Dns.GetHostEntry(Dns.GetHostName());
+         //IPAddress ipAddr = ipHost.AddressList[0];
+         //return ipAddr.ToString();
+
+         string strHostName = System.Net.Dns.GetHostName();
+
+         IPHostEntry ipEntry = System.Net.Dns.GetHostEntry(strHostName);
+
+         foreach (IPAddress ipAddress in ipEntry.AddressList)
+         {
+             if (ipAddress.AddressFamily.ToString() == "InterNetwork")
+             {
+                 return ipAddress.ToString();
+             }
+         }
+
+         return "-";
+
+     }
+
+
+     public void initRemote()
+     {
+
+         SetRemoteIPText(GetIP() + ":8080");
+         listeningURL = "http://" + GetIP() + ":8080/";
+         listener.Prefixes.Add(listeningURL);
+         listener.Start();
+
+         while (listener.IsListening)
+         {
+             HttpListenerContext context = listener.GetContext();
+             try
+             {
+                 Thread t = new Thread(() =>
+                 {
+                     var request = context.Request;
+                     switch (request.QueryString["command"].ToString())
+                     {
+                         case "start":
+                            SaveSettings();
+	                        FeedRate = Int32.Parse(ribbonTextBoxFeedRate.TextBoxText);
+	                        DataView rundata = new DataView();
+	                        rundata = dtom3.ConvertToGCode(dataGridView1, Double.Parse(ribbonTextBoxBoardOffsetX.TextBoxText), Double.Parse(ribbonTextBoxBoardOffsetY.TextBoxText));
+	    
+	                            if (backgroundWorkerDoCommand.IsBusy != true)
+	                            {
+	                                backgroundWorkerDoCommand.RunWorkerAsync();
+                                }
+                             break;
+                         case "stop":
+                             backgroundWorkerDoCommand.CancelAsync();
+                             break;
+                         case "home":
+                            Thread thrd = new Thread(new ThreadStart(DoHome));
+	                        thrd.Start();
+                            thrd.IsBackground = true;
+                             break;
+                         case "homeall":
+                             Thread thrd2 = new Thread(new ThreadStart(DoHomeAll));
+                             thrd2.Start();
+                             thrd2.IsBackground = true;
+                             break;
+                         case "estop":
+                             Thread thrdestop = new Thread(new ThreadStart(DoEStop));
+                             thrdestop.Start();
+                             thrdestop.IsBackground = true;
+                             break;
+                     }
+                    
+                     byte[] Buffer = System.Text.Encoding.UTF8.GetBytes("OK" + Environment.NewLine);
+                     context.Response.ContentType = "text/html; charset=utf-8";
+                     context.Response.OutputStream.Write(Buffer, 0, Buffer.Length);
+                     context.Response.Close();
+                     //writing the sent message into the console
+                    
+                    
+                 });
+                 t.Start();
+             }
+             catch (Exception e)
+             {
+                 Console.WriteLine(e.Message);
+             }
+
+
+         }
+
      }
     }
 

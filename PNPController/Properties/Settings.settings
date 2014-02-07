@@ -18,10 +18,10 @@
       <Value Profile="(Default)">1.6</Value>
     </Setting>
     <Setting Name="SettingFeedRate" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">12000</Value>
+      <Value Profile="(Default)">17000</Value>
     </Setting>
     <Setting Name="SettingTimeMS" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">750</Value>
+      <Value Profile="(Default)">1000</Value>
     </Setting>
   </Settings>
 </SettingsFile>

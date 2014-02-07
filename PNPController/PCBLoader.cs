@@ -110,74 +110,7 @@ namespace PNPController
             dscomponents.ReadXml(findata);
             findata.Close();
 
-            /*
-            try
-            {
-                string text = File.ReadAllText(file);
-                int counter = 1;
-                string[] sites = text.Split('\n');
-                if (sites.Length <= 1)
-                {
-                    MessageBox.Show(DateTime.Now.ToString() + " Empty Data File");
-
-                }
-                else
-                {
-                   
-                    foreach (string s in sites)
-                    {
-                        string tmprow = s;
-                        MatchCollection matches2 = Regex.Matches(tmprow, @"""(.*?)""");
-                        foreach (Match match in matches2)
-                        {
-                            foreach (Capture capture in match.Captures)
-                            {
-                                string tmpitem = capture.Value.Replace(",", "");
-                                tmprow = tmprow.Replace(capture.Value, tmpitem);
-                            }
-                        }
-
-                        string[] names = tmprow.Split(',');
-                        if (names.Length <= 1)
-                        {
-                          //  MessageBox.Show("CSV stock data has missing rows or data: " + names.Length);
-                        }
-                        else
-                        {
-                            if (!names[0].ToString().Equals("RefDes"))
-                            {
-                                dt.Rows.Add(names[0].ToString(), // RefDes
-                                    names[1].ToString(), // Type
-                                    Double.Parse(names[3].ToString()), //PosX
-                                    Double.Parse(names[2].ToString()), //PosY
-                                    Int32.Parse(names[5].ToString()), //Rotate
-                                    names[6].ToString(), //Value
-                                    Int32.Parse(names[7].ToString()), //feederNumber
-                                    Int32.Parse(names[8].ToString())); //Component Code
-                               
-                            }
-                            counter++;
-                        }
-
-                    }
-                }
-
-
-            }
-            catch (IOException)
-            {
-            }
             
-
-            foreach (DataTable dtnew in dscomponents.Tables)
-              {
-                  MessageBox.Show(dtnew.TableName);
-                  string rowcount = dscomponents.Tables[dtnew.TableName].Rows.Count.ToString();
-                  MessageBox.Show(rowcount);
-              }
-             * */  
-            //MessageBox.Show(dscomponents.Tables.Count.ToString());
-           // dscomponents.Tables
            
             DataView dvTable = new DataView(dscomponents.Tables["Component"]);
             dvTable.Sort = "feederNumber ASC";

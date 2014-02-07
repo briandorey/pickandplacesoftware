@@ -103,6 +103,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Components.cs" />
+    <Compile Include="CSVLoader.cs" />
     <Compile Include="DataToMach3.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
@@ -110,9 +111,23 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="FormBoardMultiplier.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormBoardMultiplier.Designer.cs">
+      <DependentUpon>FormBoardMultiplier.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormCSVtoXML.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormCSVtoXML.Designer.cs">
+      <DependentUpon>FormCSVtoXML.cs</DependentUpon>
+    </Compile>
+    <Compile Include="JogControls.cs" />
     <Compile Include="PCBLoader.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RemoteControl.cs" />
     <Compile Include="VideoProcessing.cs" />
     <EmbeddedResource Include="CameraHead.resx">
       <DependentUpon>CameraHead.cs</DependentUpon>
@@ -125,6 +140,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormBoardMultiplier.resx">
+      <DependentUpon>FormBoardMultiplier.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormCSVtoXML.resx">
+      <DependentUpon>FormCSVtoXML.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -146,11 +167,13 @@
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
   </ItemGroup>
   <ItemGroup>

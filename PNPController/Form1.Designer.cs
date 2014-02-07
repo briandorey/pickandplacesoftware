@@ -101,6 +101,9 @@
             this.ribbonTabMisc = new System.Windows.Forms.RibbonTab();
             this.ribbonPanelMiscOne = new System.Windows.Forms.RibbonPanel();
             this.ribbonButtonComponentEditorOpen = new System.Windows.Forms.RibbonButton();
+            this.ribbonPanelTools = new System.Windows.Forms.RibbonPanel();
+            this.ribbonButtonCSVtoXML = new System.Windows.Forms.RibbonButton();
+            this.ribbonButtonBoardMultiplier = new System.Windows.Forms.RibbonButton();
             this.ribbonButtonOpen = new System.Windows.Forms.RibbonButton();
             this.ribbonTab1 = new System.Windows.Forms.RibbonTab();
             this.ribbonTab2 = new System.Windows.Forms.RibbonTab();
@@ -116,6 +119,7 @@
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.ribbonButton8 = new System.Windows.Forms.RibbonButton();
+            this.toolStripStatusLabelIP = new System.Windows.Forms.ToolStripStatusLabel();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxPCB)).BeginInit();
             this.statusStrip1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
@@ -152,7 +156,7 @@
             this.pictureBoxPCB.InitialImage = ((System.Drawing.Image)(resources.GetObject("pictureBoxPCB.InitialImage")));
             this.pictureBoxPCB.Location = new System.Drawing.Point(3, 3);
             this.pictureBoxPCB.Name = "pictureBoxPCB";
-            this.pictureBoxPCB.Size = new System.Drawing.Size(250, 250);
+            this.pictureBoxPCB.Size = new System.Drawing.Size(294, 294);
             this.pictureBoxPCB.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBoxPCB.TabIndex = 21;
             this.pictureBoxPCB.TabStop = false;
@@ -571,6 +575,7 @@
             this.ribbonButtonManualControlPicker1Left.MaxSizeMode = System.Windows.Forms.RibbonElementSizeMode.Compact;
             this.ribbonButtonManualControlPicker1Left.SmallImage = ((System.Drawing.Image)(resources.GetObject("ribbonButtonManualControlPicker1Left.SmallImage")));
             this.ribbonButtonManualControlPicker1Left.Text = "Left";
+            this.ribbonButtonManualControlPicker1Left.Click += new System.EventHandler(this.ribbonButtonManualControlPicker1Left_Click);
             // 
             // ribbonButtonManualControlPicker1Right
             // 
@@ -578,6 +583,7 @@
             this.ribbonButtonManualControlPicker1Right.MaxSizeMode = System.Windows.Forms.RibbonElementSizeMode.Compact;
             this.ribbonButtonManualControlPicker1Right.SmallImage = ((System.Drawing.Image)(resources.GetObject("ribbonButtonManualControlPicker1Right.SmallImage")));
             this.ribbonButtonManualControlPicker1Right.Text = "Right";
+            this.ribbonButtonManualControlPicker1Right.Click += new System.EventHandler(this.ribbonButtonManualControlPicker1Right_Click);
             // 
             // ribbonButtonManualControlPicker1Up
             // 
@@ -585,6 +591,7 @@
             this.ribbonButtonManualControlPicker1Up.MaxSizeMode = System.Windows.Forms.RibbonElementSizeMode.Compact;
             this.ribbonButtonManualControlPicker1Up.SmallImage = ((System.Drawing.Image)(resources.GetObject("ribbonButtonManualControlPicker1Up.SmallImage")));
             this.ribbonButtonManualControlPicker1Up.Text = "Up";
+            this.ribbonButtonManualControlPicker1Up.Click += new System.EventHandler(this.ribbonButtonManualControlPicker1Up_Click);
             // 
             // ribbonButtonManualControlPicker1Down
             // 
@@ -592,6 +599,7 @@
             this.ribbonButtonManualControlPicker1Down.MaxSizeMode = System.Windows.Forms.RibbonElementSizeMode.Compact;
             this.ribbonButtonManualControlPicker1Down.SmallImage = ((System.Drawing.Image)(resources.GetObject("ribbonButtonManualControlPicker1Down.SmallImage")));
             this.ribbonButtonManualControlPicker1Down.Text = "Down";
+            this.ribbonButtonManualControlPicker1Down.Click += new System.EventHandler(this.ribbonButtonManualControlPicker1Down_Click);
             // 
             // ribbonPanelManualP2
             // 
@@ -609,6 +617,7 @@
             this.ribbonButtonManualControlPicker2Left.MaxSizeMode = System.Windows.Forms.RibbonElementSizeMode.Compact;
             this.ribbonButtonManualControlPicker2Left.SmallImage = ((System.Drawing.Image)(resources.GetObject("ribbonButtonManualControlPicker2Left.SmallImage")));
             this.ribbonButtonManualControlPicker2Left.Text = "Left";
+            this.ribbonButtonManualControlPicker2Left.Click += new System.EventHandler(this.ribbonButtonManualControlPicker2Left_Click);
             // 
             // ribbonButtonManualControlPicker2Right
             // 
@@ -616,6 +625,7 @@
             this.ribbonButtonManualControlPicker2Right.MaxSizeMode = System.Windows.Forms.RibbonElementSizeMode.Compact;
             this.ribbonButtonManualControlPicker2Right.SmallImage = ((System.Drawing.Image)(resources.GetObject("ribbonButtonManualControlPicker2Right.SmallImage")));
             this.ribbonButtonManualControlPicker2Right.Text = "Right";
+            this.ribbonButtonManualControlPicker2Right.Click += new System.EventHandler(this.ribbonButtonManualControlPicker2Right_Click);
             // 
             // ribbonButtonManualControlPicker2Up
             // 
@@ -623,6 +633,7 @@
             this.ribbonButtonManualControlPicker2Up.MaxSizeMode = System.Windows.Forms.RibbonElementSizeMode.Compact;
             this.ribbonButtonManualControlPicker2Up.SmallImage = ((System.Drawing.Image)(resources.GetObject("ribbonButtonManualControlPicker2Up.SmallImage")));
             this.ribbonButtonManualControlPicker2Up.Text = "Up";
+            this.ribbonButtonManualControlPicker2Up.Click += new System.EventHandler(this.ribbonButtonManualControlPicker2Up_Click);
             // 
             // ribbonButtonManualControlPicker2Down
             // 
@@ -630,6 +641,7 @@
             this.ribbonButtonManualControlPicker2Down.MaxSizeMode = System.Windows.Forms.RibbonElementSizeMode.Compact;
             this.ribbonButtonManualControlPicker2Down.SmallImage = ((System.Drawing.Image)(resources.GetObject("ribbonButtonManualControlPicker2Down.SmallImage")));
             this.ribbonButtonManualControlPicker2Down.Text = "Down";
+            this.ribbonButtonManualControlPicker2Down.Click += new System.EventHandler(this.ribbonButtonManualControlPicker2Down_Click);
             // 
             // ribbonPanelManualFeederAct
             // 
@@ -643,10 +655,12 @@
             this.ribbonButton7.SmallImage = ((System.Drawing.Image)(resources.GetObject("ribbonButton7.SmallImage")));
             this.ribbonButton7.Text = "Open Selector";
             this.ribbonButton7.TextAlignment = System.Windows.Forms.RibbonItem.RibbonItemTextAlignment.Right;
+            this.ribbonButton7.Click += new System.EventHandler(this.ribbonButton7_Click);
             // 
             // ribbonTabMisc
             // 
             this.ribbonTabMisc.Panels.Add(this.ribbonPanelMiscOne);
+            this.ribbonTabMisc.Panels.Add(this.ribbonPanelTools);
             this.ribbonTabMisc.Text = "Misc";
             // 
             // ribbonPanelMiscOne
@@ -661,6 +675,28 @@
             this.ribbonButtonComponentEditorOpen.SmallImage = ((System.Drawing.Image)(resources.GetObject("ribbonButtonComponentEditorOpen.SmallImage")));
             this.ribbonButtonComponentEditorOpen.Text = "Component Editor";
             this.ribbonButtonComponentEditorOpen.Click += new System.EventHandler(this.ribbonButtonComponentEditorOpen_Click);
+            // 
+            // ribbonPanelTools
+            // 
+            this.ribbonPanelTools.ButtonMoreEnabled = false;
+            this.ribbonPanelTools.ButtonMoreVisible = false;
+            this.ribbonPanelTools.Items.Add(this.ribbonButtonCSVtoXML);
+            this.ribbonPanelTools.Items.Add(this.ribbonButtonBoardMultiplier);
+            this.ribbonPanelTools.Text = "Tools";
+            // 
+            // ribbonButtonCSVtoXML
+            // 
+            this.ribbonButtonCSVtoXML.Image = ((System.Drawing.Image)(resources.GetObject("ribbonButtonCSVtoXML.Image")));
+            this.ribbonButtonCSVtoXML.SmallImage = ((System.Drawing.Image)(resources.GetObject("ribbonButtonCSVtoXML.SmallImage")));
+            this.ribbonButtonCSVtoXML.Text = "CSV to XML";
+            this.ribbonButtonCSVtoXML.Click += new System.EventHandler(this.ribbonButtonCSVtoXML_Click);
+            // 
+            // ribbonButtonBoardMultiplier
+            // 
+            this.ribbonButtonBoardMultiplier.Image = ((System.Drawing.Image)(resources.GetObject("ribbonButtonBoardMultiplier.Image")));
+            this.ribbonButtonBoardMultiplier.SmallImage = ((System.Drawing.Image)(resources.GetObject("ribbonButtonBoardMultiplier.SmallImage")));
+            this.ribbonButtonBoardMultiplier.Text = "Board Multiplier";
+            this.ribbonButtonBoardMultiplier.Click += new System.EventHandler(this.ribbonButtonBoardMultiplier_Click);
             // 
             // ribbonButtonOpen
             // 
@@ -705,7 +741,8 @@
             this.toolStripProgressBar1,
             this.toolStripStatusLabelActiveComponent,
             this.toolStripStatusLabelCurrentCommand,
-            this.toolStripStatusLabelresultLabel});
+            this.toolStripStatusLabelresultLabel,
+            this.toolStripStatusLabelIP});
             this.statusStrip1.Location = new System.Drawing.Point(0, 808);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(1020, 22);
@@ -753,6 +790,7 @@
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 1;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tableLayoutPanel1.Size = new System.Drawing.Size(1020, 625);
             this.tableLayoutPanel1.TabIndex = 30;
             // 
@@ -772,6 +810,12 @@
             this.ribbonButton8.MaxSizeMode = System.Windows.Forms.RibbonElementSizeMode.Compact;
             this.ribbonButton8.SmallImage = ((System.Drawing.Image)(resources.GetObject("ribbonButton8.SmallImage")));
             this.ribbonButton8.Text = "Left";
+            // 
+            // toolStripStatusLabelIP
+            // 
+            this.toolStripStatusLabelIP.Name = "toolStripStatusLabelIP";
+            this.toolStripStatusLabelIP.Size = new System.Drawing.Size(17, 17);
+            this.toolStripStatusLabelIP.Text = "IP";
             // 
             // Form1
             // 
@@ -883,6 +927,10 @@
         private System.Windows.Forms.RibbonButton ribbonButtonManualControlPicker2Right;
         private System.Windows.Forms.RibbonButton ribbonButtonManualControlPicker2Up;
         private System.Windows.Forms.RibbonButton ribbonButtonManualControlPicker2Down;
+        private System.Windows.Forms.RibbonPanel ribbonPanelTools;
+        private System.Windows.Forms.RibbonButton ribbonButtonCSVtoXML;
+        private System.Windows.Forms.RibbonButton ribbonButtonBoardMultiplier;
+        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabelIP;
     }
 }
 

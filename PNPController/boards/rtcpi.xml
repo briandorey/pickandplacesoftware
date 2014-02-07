@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <pcbboard>
 <ComponentList>
   <Component>
@@ -55,11 +55,11 @@
 </ComponentList>
 <BoardDefaults>
   <Settings>
-    <BoardOffsetX>123</BoardOffsetX>
-    <BoardOffsetY>456</BoardOffsetY>
-    <FeedRate>789</FeedRate>
-    <PCBThickness>1.0</PCBThickness>
-    <chipfeederms>800</chipfeederms>
+    <BoardOffsetX>36.7</BoardOffsetX>
+        <BoardOffsetY>74.7</BoardOffsetY>
+        <FeedRate>17000</FeedRate>
+        <PCBThickness>1.6</PCBThickness>
+    <chipfeederms>1000</chipfeederms>
   </Settings>
 </BoardDefaults>
 </pcbboard>

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<pcbboard>
+<ComponentList>
+ <Component>
+     <RefDes>U7</RefDes>
+     <Type>FDC6301N</Type>
+     <Value></Value>
+     <PosX>9.54</PosX>
+     <PosY>32.1</PosY>
+     <Rotate>0</Rotate>
+     <feederNumber>1</feederNumber>
+     <ComponentCode>7</ComponentCode>
+   </Component>
+ <Component>
+     <RefDes>C3</RefDes>
+     <Type>CAP</Type>
+     <Value>10uF Tantalum</Value>
+     <PosX>25.37</PosX>
+     <PosY>15.24</PosY>
+     <Rotate>0</Rotate>
+     <feederNumber>2</feederNumber>
+     <ComponentCode>6</ComponentCode>
+   </Component>
+ <Component>
+     <RefDes>C4</RefDes>
+     <Type>CAP</Type>
+     <Value>10uF Tantalum</Value>
+     <PosX>25.37</PosX>
+     <PosY>10.16</PosY>
+     <Rotate>0</Rotate>
+     <feederNumber>2</feederNumber>
+     <ComponentCode>6</ComponentCode>
+   </Component>
+ <Component>
+     <RefDes>C1</RefDes>
+     <Type>CAP</Type>
+     <Value>100nf</Value>
+     <PosX>24.88</PosX>
+     <PosY>17.31</PosY>
+     <Rotate>0</Rotate>
+     <feederNumber>3</feederNumber>
+     <ComponentCode>5</ComponentCode>
+   </Component>
+ <Component>
+     <RefDes>C2</RefDes>
+     <Type>CAP</Type>
+     <Value>100nf</Value>
+     <PosX>25.04</PosX>
+     <PosY>8.1</PosY>
+     <Rotate>0</Rotate>
+     <feederNumber>3</feederNumber>
+     <ComponentCode>5</ComponentCode>
+   </Component>
+ <Component>
+     <RefDes>R21</RefDes>
+     <Type>CAY16-222J4LF</Type>
+     <Value></Value>
+     <PosX>13.54</PosX>
+     <PosY>31.44</PosY>
+     <Rotate>90</Rotate>
+     <feederNumber>7</feederNumber>
+     <ComponentCode>3</ComponentCode>
+   </Component>
+ <Component>
+     <RefDes>U1</RefDes>
+     <Type>MCP3424</Type>
+     <Value>MCP3424</Value>
+     <PosX>16.79</PosX>
+     <PosY>9.4</PosY>
+     <Rotate>0</Rotate>
+     <feederNumber>24</feederNumber>
+     <ComponentCode>100</ComponentCode>
+   </Component>
+ <Component>
+     <RefDes>U2</RefDes>
+     <Type>MCP3424</Type>
+     <Value>MCP3428</Value>
+     <PosX>16.79</PosX>
+     <PosY>20.1</PosY>
+     <Rotate>0</Rotate>
+     <feederNumber>24</feederNumber>
+     <ComponentCode>100</ComponentCode>
+   </Component>
+</ComponentList>
+<BoardDefaults>
+  <Settings>
+   <BoardOffsetX>36.7</BoardOffsetX>
+       <BoardOffsetY>74.7</BoardOffsetY>
+       <FeedRate>17000</FeedRate>
+       <PCBThickness>1.6</PCBThickness>
+    <chipfeederms>1000</chipfeederms>
+  </Settings>
+</BoardDefaults>
+</pcbboard>

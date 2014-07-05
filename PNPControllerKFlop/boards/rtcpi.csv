@@ -1,0 +1,6 @@
+RefDes,Type,Y (mm),X (mm),Side,Rotate,Value,Feeder,Code
+C1,CAP,18.1,27.51,Top,90,100nf,3,5
+R1,RES,24.45,24.77,Top,0,10K,4,2
+R21,CAY16-222J4LF,10.72,31.08,Top,90,10K,7,4
+U1,DS1307Z,24.1,29.8,Top,271,,25,102
+U7,FDC6301N,6.53,31.78,Top,0,,1,7

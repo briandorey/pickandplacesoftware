@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="ComponentList">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" name="Component">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="ComponentCode" type="xs:integer"  />
+              <xs:element name="ComponentValue" type="xs:string" />
+              <xs:element name="Package" type="xs:string" />
+              <xs:element name="ComponentHeight" type="xs:decimal" />
+              <xs:element name="PickerHeight" type="xs:decimal" />
+              <xs:element name="DefaultRotation" type="xs:decimal" />
+              <xs:element name="VerifywithCamera" type="xs:boolean" />
+              <xs:element name="TapeFeeder" type="xs:boolean" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
